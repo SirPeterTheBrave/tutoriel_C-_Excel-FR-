@@ -1,0 +1,770 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+    <head>
+      <title>Pierre-Rafael Vellone - Manipuler Excel en C#</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" type="text/css" href="Styles/CSS/print.css"  media="print" />
+      <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"  media="screen" />
+      <link rel="stylesheet" type="text/css" href="Styles/CSS/main.css" media="screen"/>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+      <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+      <script src='Scripts/JS/Collapsible.js'></script>
+      <script src='Scripts/JS/reachBookmark.js'></script>
+    </head>
+    <body>
+            <!--Navbar-->
+      <nav class="navbar navbar-expand-sm sticky-top justify-content-center  ">
+        
+        <button class="navbar-toggler " type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+          <i class="fa fa-bars" aria-hidden="true"></i>
+        </button>
+        <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="darkSwitch"/>
+                <label class="custom-control-label" for="darkSwitch">
+                  <i class="fas fa-lightbulb"></i> 
+                </label>    
+                <script src='Scripts/JS/dark-mode-switch.min.js'></script>
+        </div>
+        <div class="collapse navbar-collapse justify-content-center " id="collapsibleNavbar">
+          <ul class="navbar-nav align-items-center">
+            <li class="nav-item">
+              <a class="nav-link bookmark" href="#intro">
+                Introduction <i class="fa fa-bookmark" aria-hidden="true"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link bookmark" href="#prep">
+                Préparation <i class="fa fa-bookmark" aria-hidden="true"></i>
+              </a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" id="navbardrop" data-toggle="dropdown">
+                Programmer
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item bookmark" href="#Application">Application <i class="fa fa-bookmark" aria-hidden="true"></i></a></li>
+                <li><a class="dropdown-item bookmark" href="#WorkBooks">WorkBooks <i class="fa fa-bookmark" aria-hidden="true"></i></a></li>
+                <li><a class="dropdown-item bookmark" href="#WorkSheets">WorkSheets <i class="fa fa-bookmark" aria-hidden="true"></i></a></li>
+                <li><a class="dropdown-item bookmark" href="#Ranges">Ranges et Cells <i class="fa fa-bookmark" aria-hidden="true"></i></a></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link bookmark" href="#con">
+                Conclusion <i class="fa fa-bookmark" aria-hidden="true"></i>
+              </a>
+            </li>       
+            <li class="nav-item">
+              <a class="nav-link" href="#about">à propo <i class="fa fa-bookmark" aria-hidden="true"></i>
+              </a>
+            </li> 
+            </ul>
+        </div>  
+      </nav>
+
+      <!--Banner-->
+      <header id="banner" class = "d-sm-flex align-items-center ">
+        <div class="container">
+          <div class=" row align-items-center">
+            <div class="col-5" ><a href="https://docs.microsoft.com/en-us/dotnet/csharp/" target="_blank"><img class="img-fluid" src="Styles/Images/CSharp.png" alt="C#.Net"/></a></div> 
+            <div class="col-2" ><img class="img-fluid" src="Styles/Images/&.png" alt="&"/></div> 
+            <div class="col-5" ><a href = "https://products.office.com/en-us/excel" target="_blank"><img class="img-fluid" src="Styles/Images/Excel.png" alt="Excel"/></a></div>
+          </div>    
+          <div class = "text-center">
+              <h1 class = "d-print-block">Manipuler Excel en C#</h1>
+              <h3 class = "d-print-block">En utilisant <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.office.interop.excel?view=excel-pia">Microsoft.Office.Interop.Excel</a></h3>
+              <button type="button" data-toggle= "collapse" data-target="#text" class="btn btn-outline-secondary"  onclick="location.href='#text'">
+                <i class="fa fa-angle-double-down"></i>
+              </button>
+          </div>
+        </div>
+      </header>
+
+      <!--Content-->
+      <section id="text" class="collapse container d-print-block">
+        <article>
+          <h1 class="text-center">Manipuler Excel en C#</h1>
+          <h3 class="text-center">En utilisant Microsoft.Office.Interop.Excel</h3>
+          <h2 id="intro">Introduction</h2>
+          <p>
+            &emsp;&emsp;Alors, vous voulez manipuler Excel dans votre programme, que ce soit pour trier de l’information où crée un rapport. 
+            Vous êtes chanceux! Microsoft fournit l’API <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.office.interop.excel?view=excel-pia" target="_blank">Microsoft.Office.Interop.Excel</a>. 
+            Dans votre chance vous êtes aussi mal chanceux puisqu’elle n’est pas très intuitive ou efficace. Avant de commencer, il est important de noter que vous pouvez trouver d’autres API qui font déjà le travail pour le problème que vous avez, mais ils peuvent être payants ou causer des problèmes. 
+            Nous allons ici aborder l’utilisation de <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.office.interop.excel?view=excel-pia" target="_blank">Microsoft.Office.Interop.Excel</a> en C#. 
+            L’API permet aussi d’Utiliser ODBC et OLE DB mais nous n’allons pas les couvrir ici puisqu’elle traite le fichier comme une base de données. Vue la complexité de la librairie nous n’allons que explorer la surface de ce que nous pouvons faire. À la fin de ce guide, vous allez pouvoir créer votre propre librairie vous permettant de manipuler Excel de façon plus efficace que l’outil de base de Microsoft ou bien créer votre fonction spécifique. 
+          </p>
+          <p><em>Vous pouvez utiliser la barre de menu en haut de l’écran pour naviguer rapidement à travers les sections.</em></p>
+        </article>
+        <div class="card row">
+          <a class="card-link" data-toggle="collapse" href="#collapseOne">
+            <div class="card-header">
+              <h2>Préparation <i class='fas fa-angle-down '></i></h2> 
+            </div>
+          </a>
+          <div id="collapseOne" class="collapse">
+            <div class="card-body" id = "prep">
+              <p>
+                Avant de commencer, vous devez vous assurer que vous avez installé Excel sur la machine avec une licence valide.
+                 Il est possible de téléchargé la librairie <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.office.interop.excel?view=excel-pia" target="_blank">Microsoft.Office.Interop.Excel</a>, mais le programme ne pourra pas c’exécuté. 
+              </p>
+              <p>
+                Ensuit, dans votre projet, vous allez devoir inclure une référence à <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.office.interop.excel?view=excel-pia" target="_blank">Microsoft.Office.Interop.Excel</a>.
+                <br>Commencé par:
+              </p>
+              <div class = "row align-items-center">
+                  <p class ="col-sm-6 text-center">
+                    <em>Un clic droit sur References>AddReference</em>
+                  </p>
+                <div class ="col-sm-6">
+                 <img class="img-fluid img-responsive" src="Styles/Images/Reference.png" alt="[References right click Example]"/>
+                </div>
+            </div>
+            <div class = "row align-items-center">
+                <p class ="col-sm-6 text-center">
+                  Sur la nouvelle fenêtre allez dans la section <strong>COM</strong> et ensuite trouvez la référence à Excel.
+                  Pour moi, en date de ce texte il s’agit de <strong>Microsoft Excel 16.0 Object Library</strong>.
+                  <br><br>
+                  <em>Dépendamment de votre version ou de votre installation la référence peut se trouver dans la section <strong>Assemblies</strong> sous d’autre nom.</em>
+                </p>
+              <div class ="col-sm-6">
+               <img class="img-fluid img-responsive" src="Styles/Images/Reference_COM.png" alt="[References Object Library Example]"/>
+              </div>
+            </div>
+            <div class = "row align-items-center">
+              <p class ="col-sm-6 text-center">
+                Finalement il faut inclure une référence à la librairie dans le fichier/classe:
+              </p>
+<pre class ="col-sm-6 ">using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+<mark>using Microsoft.Office.Interop.Excel; //Reference a Excel </mark>
+
+namespace ExcelTest
+{
+  class Program
+  {
+    static void Main(string[] args)
+    {
+
+    }
+  }
+}</pre>
+          </div>
+          <div class = "row align-items-center">
+            <p class ="col-sm-6 text-center">
+              Pour faciliter l’utilisation de la librairie on peut, en c# définir un alias de la façon suivante :
+            </p>
+<pre class ="col-sm-6 ">using Excel = Microsoft.Office.Interop.Excel;</pre>
+        </div>
+        <p>
+          Dans le contexte de ce tutoriel, on n’est pas obligé d’utiliser d’alias,
+          Visual Studio comprend que les Object qu’on va utiliser viennent de Microsoft.Office.Interop.Excel,
+          mais je vais l’utiliser dans ce tutoriel pour éviter la confusion.
+        </p>
+        </div>
+          </div>
+        </div>
+        <div class="card row">
+          <a class="card-link" data-toggle="collapse" href="#collapseTwo">
+            <div class="card-header">
+              <h2>Programmer <i class='fas fa-angle-down '></i></h2> 
+            </div>
+          </a>
+          <div id="collapseTwo" class="collapse">
+            <div class="card-body" id = "prog">
+              <p>
+                La librairie comporte 5 objets principaux qui nous permettent de manipuler des fichiers.
+                Vu qu’ils sont utilisés en ordre descendent,
+                je vais vous les présenter dans cet ordre.
+              </p>
+              <p>
+                Il y à :
+              </p>
+              <ol>
+                <li>
+                  L’<a class="bookmark" href="#Application" >Application</a>
+                  <p>
+                    Utiliser pour démarrer le processus d’Excel
+                  </p>
+                </li>
+                <li>
+                  Le <a class="bookmark" href="#WorkBooks" >WorkBook</a>
+                  <p>
+                    Un synonyme de Fichier, il gère donc le fichier Excel et 1 application peut gérer plusieurs WorkBook. Elle comporte aussi les méthodes pour sauvegarder. le fichier
+                  </p>
+                </li>
+                <li>
+                  Le <a class="bookmark" href="#WorkSheets" >WorkSheet</a>
+                  <p>
+                    Un synonyme de Sheet, il s’agit donc des Sheet dans un fichier et donc il y a plusieurs WorkSheet dans un WorkBook.
+                  </p>
+                </li>
+                <li>
+                  Le <a class="bookmark" href="#Ranges" >Le Range et Cell</a>
+                  <p>
+                    Le Range est un Object complexe et souvent inefficace qui comporte des cellules d’un Sheets Excel. Les Cells contienne les informations des cellules, mais sont aussi considéré comme des Range.
+                  </p>
+                </li>
+              </ol>
+              <p>
+                <em>Les Sections qui suivent vont vous expliquer leur base et fonctionnement avec des exemples de code pour vous permettre d’essayer de votre coter.</em>
+              </p>
+              <div class="card row">
+                <a class="card-link" data-toggle="collapse" href="#collapseTwo1">
+                  <div class="card-header">
+                    <h3>Application <i class='fas fa-angle-down '></i></h3> 
+                  </div>
+                </a>
+                <div id="collapseTwo1" class="collapse">
+                  <div class="card-body" id = "Application">
+                    <p>
+                      L’Object <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.office.interop.excel.application?redirectedfrom=MSDN&view=excel-pia" target="_blank" >Application</a> permet de créer et manipule le processus Excel.
+                      Il suffit d’en déclarer un nouvel objet pour que le processus démarre. 
+                    </p>
+                    <pre>Excel.Application app = new Excel.Application();</pre>
+                    <p>
+                      Si vous voulez voir la fenêtre, vous n’avez qu’à changer la propriété Visible à true
+                    </p>
+                    <pre>app.Visible = true;</pre>
+                    <p>
+                      Dans un contexte d’automatisation, il est inutile de voir la fenêtre, mais il est important de garder en tête qu’un objet application est équivalant à une application ouverte sur le bureau.
+                    </p>
+                    Vu qu’il s’agit d’un processus, l’objet nous permet de récupérer le « Process ID » en nous donnent ça poigner de haut niveau par l’appel de la propriété:
+                    <p>
+                    <pre>app.Hwnd;</pre>
+                    <p>
+                      Vous pouvez ensuit passer ce Long Int dans la fonction <a href="https://stackoverflow.com/questions/18184654/find-process-id-by-windows-handle" target="_blank">GetWindowThreadProcessID()</a>. Cela requière une importation des librairies du système de Windows. Avec l’identifient nous pourrions forcer l’arrêt de l’application ou surveiller le processus,<strong> mais cela est pour un autre tutoriel.</strong> 
+                    </p>
+                    <p>
+                      En parlant d’arrêter le processus. 
+                      Quand l’objet est détruit que ce soit manuellement ou automatiquement par le « garbage collector ».
+                       Le processus va être arrêté.
+                       Dans le cas d’un « hard crash », il se peut que le processus reste ouvert.
+                       Si le « crash » arrivé plusieurs fois dans une boucle,
+                       vous allez avoir un « leak ».
+                       D’où vient l’utilité de conserver l’identifient du processus pour le tué d’une autre manière.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="card row">
+                <a class="card-link" data-toggle="collapse" href="#collapseTwo2">
+                  <div class="card-header">
+                    <h3>WorkBooks <i class='fas fa-angle-down '></i></h3> 
+                  </div>
+                </a>
+                <div id="collapseTwo2" class="collapse">
+                  <div class="card-body" id = "WorkBooks">
+                    <p>
+                      L’objet <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.office.interop.excel.workbook?view=excel-pia" target="_blank" >WorkBook</a> représente un fichier Excel.
+                      Avant de jouer avec, il faut avoir un objet Application de créé.
+                      C’est-à-dire, avoir la ligne de code suivante:
+                    </p>
+                    <pre>using System;
+using Excel = Microsoft.Office.Interop.Excel;
+                    
+namespace ExcelTest
+{
+  class Program
+  {
+    static void Main(string[] args)
+    {
+      Excel.Application app = new Excel.Application();
+    }
+  }
+}</pre>
+                  <h3>Ouverture</h3>
+                  <p>
+                    Pour ouvrir un fichier existant, il faut simplement demander à l’objet <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.office.interop.excel.workbooks?view=excel-pia" target="_blank" >Workbooks</a> dans l’objet Application de l’ouvrir.
+                     La fonction va retourner une référence au workbook ouvert, donc on n’a pas besoin d’aller le chercher.
+                  </p>
+<pre>//Code pour le chemin ver le dossier de travail
+string AppPath = AppDomain.CurrentDomain.BaseDirectory; 
+// code pour le chemin complet avec le nom et extension du fichier
+string filePath = AppPath + "test.xlsx"; 
+
+Excel.Workbook workBook = <mark>app.Workbooks.Open(filePath);</mark>    
+</pre>
+                  <h4>
+                    Création
+                  </h4>
+                  <p>
+                    Si vous voulez créer un Workbook, il s’agit simplement d’ajouter un Workbook à l’object Workbooks avec <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.office.interop.excel.workbooks.add?view=excel-pia#Microsoft_Office_Interop_Excel_Workbooks_Add_System_Object_" target="_blank" >app.Workbooks.Add()</a>.
+                  </p>
+<pre>Excel.Workbook newWorkBook = app.Workbooks.Add();</pre>
+                  <h4>
+                  Sauvegarde
+                  </h4>
+                  <p>
+                    Une fois le fichier créer, il est bon de le sauvegarder avec la fonction <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.office.interop.excel._workbook.save?view=excel-pia#Microsoft_Office_Interop_Excel__Workbook_Save" target="_blank" >workbook.SaveAs()</a>. 
+                    Cette fonction équivalent a une « Save as » ou « enregistrer sous », vous donne plusieurs options non obligatoires, mais deux y sont importants. 
+                    Le chemin et le format.
+                  </p>
+                  <ol>
+                    <li>
+                      <p>Le chemin ne doit pas avoir d’extension,
+                         car dépendamment du format donné il pourrait y avoir un conflit. </p>
+                    </li>
+                    <li>
+                      <p>L’option de format permet aussi de convertir le fichier.
+                         Il prend un objet <a href="https://docs.microsoft.com/en-us/office/vba/api/Excel.XlFileFormat" target="_blank" >XlFileFormat</a> qui est un enum de différent format qu’Excel peut gérer.
+                          Dans l’exemple il s’agit du format .xlsx.
+                           Dépendamment de votre version Excel, il s’agit déjà du format par défaut, mais vous pouvez ici créer un .xls.
+                         Pour voir la liste des formats du Enum, cliquer sur le lien ce XlFileFormat)</p>
+                    </li>
+                  </ol>
+                  <pre>workBook.SaveAs(AppPath + "test2", Excel.XlFileFormat.xlOpenXMLWorkbook);</pre>
+                  <p>
+                    Si vous voulez sauvegarder une modification, vous n’avez qu’à appel <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.office.interop.excel._workbook.saveas?view=excel-pia#Microsoft_Office_Interop_Excel__Workbook_SaveAs_System_Object_System_Object_System_Object_System_Object_System_Object_System_Object_Microsoft_Office_Interop_Excel_XlSaveAsAccessMode_System_Object_System_Object_System_Object_System_Object_System_Object_" target="_blank" >workbook.save()</a>:
+                  </p>
+                  <pre>workBook.Save();</pre>
+                  <h4>
+                    Fermeture
+                  </h4>
+                  <p>
+                    Une fois les manipulations terminées, il faut fermer le Workbook.
+                     S’il n’est pas fermé, il va rester ouvert en mémoire même si le programme est terminé et le processus Excel va toujours rouler.
+                  </p>
+                  <p>
+                    Un workbook peut être fermé de la manier suivante :
+                  </p>
+                  <pre>workBook.Close();</pre>
+                  <p>
+                    Plusieurs workbook peuvent être fermés en appelant la même méthode de l’objet Workboooks de l’objet Appplication :
+                  </p>
+                  <pre>app.Workbooks.Close();</pre>
+                  <h4>
+                    Les Alertes
+                  </h4>
+                  <p>
+                    Si vous avez testé les lignes de code, vous avez surement remarqué des fenêtres de dialogue qui s’ouvraient pour vous avertir.
+                     Il peut être enlevé ce qui va automatiquement forcer les problèmes.
+                     Il suffie de demandé à l’application d’arrêté avec la propriété DisplayAlerts :
+                  </p>
+                  <pre>app.DisplayAlerts = false;</pre>
+                  </div>
+                </div>
+              </div>
+              <div class="card row">
+                <a class="card-link" data-toggle="collapse" href="#collapseTwo3">
+                  <div class="card-header">
+                    <h3>WorkSheets <i class='fas fa-angle-down '></i></h3> 
+                  </div>
+                </a>
+                <div id="collapseTwo3" class="collapse">
+                  <div class="card-body" id = "WorkSheets">
+                    <p>
+                      L’objet <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.office.interop.excel.worksheet?view=excel-pia" target="_blank" >Worksheet</a> se trouve dans les Workbook. Ils sont des Sheet d’un fichier Excel. Il faut donc avoir un Workbook d’ouvert, comme de complet :
+                    </p>
+                    <pre>using System;
+using Excel = Microsoft.Office.Interop.Excel;
+namespace ExcelTest
+{
+  class Program
+  {
+                      
+    static void Main(string[] args)
+    {
+      string AppPath = AppDomain.CurrentDomain.BaseDirectory;
+      string filePath = AppPath + "test.xlsx";
+                      
+      Excel.Application app = new Excel.Application();
+      app.DisplayAlerts = false;
+      Excel.Workbook workBook = app.Workbooks.Open(filePath);
+                      
+      //Code a ajouté
+                      
+      workBook.Save();
+      workBook.Close();
+    }  
+  }
+}</pre>
+                  <h4>
+                    Accès au Worksheet 
+                  </h4>
+                  <p>
+                    Pour accéder au Sheets du fichier, il s’agit simplement d’accéder à l’objet Worksheets de l’objet Workbook. Il peut accepter un index ou un string de la manière suivante :
+                  </p>
+                  <p>
+                    <em>L’index de base est 1 et non 0 dans tous les objets Excel.</em>
+                  </p>
+                  <pre>Excel.Worksheet worksheet = workBook.Worksheets[1];</pre>
+                  <pre>Excel.Worksheet worksheet = workBook.Worksheets["Sheet1"];</pre>
+                  <p>
+                    Vous pouvez aussi obtenir le nombre de sheets pour faire une boucle par la propriété :
+                  </p>
+                  <pre>int count = workBook.Worksheets.Count; </pre>
+                  <h4>
+                    Ajouté un Worksheet
+                  </h4>
+                  <p>
+                    Pour ajouter un Worksheet, il faut juste utiliser la fonction <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.office.interop.excel.worksheets.add?view=excel-pia#Microsoft_Office_Interop_Excel_Worksheets_Add_System_Object_System_Object_System_Object_System_Object_" target="_blank" >Worksheets.add()</a>:
+                  </p>
+                  <pre> workBook.worksheets.add();</pre>
+                  <p>
+                    Il aura un nom par défaut, voire la section de <strong>manipulation</strong> d’un Worksheet pour le renommer;
+                  </p>
+                  <h4>
+                    Détruire un Worksheet 
+                  </h4>
+                  <p>
+                    Pour le détruire, on peut simplement appeler la fonction delete(); de la Worksheet
+                  </p>
+                  <pre>worksheet.Delete()</pre>
+                  <h4>
+                  Manipuler les Worksheet
+                  </h4>
+                  <p>
+                  Le nom du Worksheet peut être accéder ou modifier par la propriété worksheet.Name 
+                  </p>
+                  <pre>worksheet.Name = "New Name";</pre>
+                  </div>
+                </div>
+              </div>
+              <div class="card row">
+                <a class="card-link" data-toggle="collapse" href="#collapseTwo4">
+                  <div class="card-header">
+                    <h3>Ranges et Cells <i class='fas fa-angle-down '></i></h3> 
+                  </div>
+                </a>
+                <div id="collapseTwo4" class="collapse">
+                  <div class="card-body" id = "Ranges">
+                    <p>
+                      Les objets Range sont des objets complexes qui contiennent les cellules Excel. Ici, les cellules sont aussi un objet range. Les valeurs, les formules et le formatage sont toute dans les cellules d’un. Pour vous aider à comprendre, regardez la photo suivante.
+                    </p>
+                    <img class="img-fluid img-responsive" src="Styles/Images/Range.png" alt="Image de cellules excel"/>
+                    <p>
+                      Les colonnes, les rangées, les sélections de cellules sont en fait des range, même la cellule singulière. Encore plus complexe est que vous pouvez récursivement accéder aux range. Il est donc possible de demander une colonne d’une sélection de ranger, ou d’inutilement demander la première colonne de la première colonne a l’infini sans rien changer. Cette façon de procéder peut sembler étrange, mais elle a ses avantage et inconvénient.
+                    </p>
+                    <p>
+                      Avant de commencer vous devez avoir une Application d’ouverte, un Workbook d’ouvert et un Woksheet de sélectionner :
+                    </p>
+ <pre>using System;
+using Excel = Microsoft.Office.Interop.Excel;
+namespace ExcelTest
+{
+  class Program
+   {                                       
+    static void Main(string[] args)
+    {
+      string AppPath = AppDomain.CurrentDomain.BaseDirectory;
+      string filePath = AppPath + "test.xlsx";
+            
+      Excel.Application app = new Excel.Application();
+      app.DisplayAlerts = false;
+
+      Excel.Workbook workBook = app.Workbooks.Open(filePath);
+
+      Excel.Worksheet worksheet= workBook.Worksheets[1];
+
+      //Manipulation des donner
+
+      workBook.Save();
+      workBook.Close();
+    }
+  }
+}</pre>
+                  <H4>
+                    Accès au Range et Cells
+                  </H4>
+                  <p>
+                    On peut obtenir un range par les propriétés suivante :
+                  </p>
+                  <h5>
+                    <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.office.interop.excel.range.rows?view=excel-pia" target="blank_">Ranger</a> :
+                  </h5>
+                  <pre>Excel.Range range = worksheet.Rows;</pre>
+                  <p>
+                    Il vous retournera tout les cellules et donc le WorkSheet au complet
+                  </p>
+                  <pre>Excel.Range range = worksheet.Rows[1];</pre>
+                  <p>
+                    Ici nous avons toutes les cellules de la première ranger, pour un .xlsx is s’agit de 16384 cellules
+                  </p>
+
+                  <h5>
+                    <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.office.interop.excel.range.columns?view=excel-pia#Microsoft_Office_Interop_Excel_Range_Columns" target="blank_">Colonne</a> :
+                  </h5>
+                  <pre>Excel.Range range = worksheet.Columns;</pre>
+                  <p>
+                    Il vous retournera tout les cellules et donc le WorkSheet au complet
+                  </p>
+                  <pre>Excel.Range range = worksheet.Columns[1];</pre>
+                  <p>
+                    Ici nous avons toutes les cellules de la première colonne, pour un .xlsx il s’agit de 1104876 cellules
+                  </p>
+
+                  <h5>
+                    <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.office.interop.excel.range.cells?view=excel-pia#Microsoft_Office_Interop_Excel_Range_Cells" target="blank_">Cellule</a> :
+                  </h5>
+                  <pre>Excel.Range range = worksheet.Cells;</pre>
+                  <p>Il vous retournera tout les cellules et donc le WorkSheet au complet</p>
+                  <pre>Excel.Range range = worksheet.Cells[1,1];</pre>
+                  <p>
+                    ou
+                  </p>
+                  <pre>Excel.Range range = worksheet.Cells[“A1”];</pre>
+                  <p>
+                    Vous retournera la cellule à la coordonnés.
+                  </p>
+                  <p>
+                    <em><strong>Les coordonnés sont toujours [ranger,colonne] avec un index de base de 1.</strong></em>
+                  </p>
+
+                  <h5>
+                    <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.office.interop.excel.range?view=excel-pia" target="blank_">Range</a> :
+                  </h5>
+                  <pre>Excel.Range range = worksheet.Range[worksheet.cells[1,1],worksheet.cells[2,2]];</pre>
+                  <p>
+                    Ou 
+                  </p>
+                  <pre>Excel.Range range = worksheet.Range[“A1”,”B2”];</pre>
+                  <p>
+                    Dans ses deux cas, nous obtenons un carré de A1, A2,B1,B2
+                  </p>
+                  <p>
+                    <em>Étant donné la récursivité des Ranges, je n’est pas tout explorer en détail, mais sache qu’il est possible de faire la commande suivante.</em>
+                    
+                  </p>
+                  <pre>Excel.range range = worksheet.Range[“A1”,”B2”].Columns[1].Cells;</pre>
+                  <p>
+                    L’objet range contiens ainsi les cellules de A1 a A2 même si on est partie d’un range de A1,A2,B1,B2.
+                  </p>
+                  <h5>
+                    Plusieurs Ranges
+                  </h5>
+                  <p>
+                    Il est aussi possible de sélectionner plusieurs Range avec <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.office.interop.excel.ranges.count?view=excel-pia#Microsoft_Office_Interop_Excel_Ranges_Count" target="blank_">worksheet.Ranges</a>, mais nous allons-nous tenir à une Range à la foi.
+                  </p>
+                  <br>
+                  <h4>
+                    Cells
+                  </h4>
+                  <p>
+                    Les cellules sont les valeurs de base et c'est là que les informations se trouvent, c’est-à-dire les formules, le texte, les formats. Etc.
+                  </p>
+                  <P>
+                    Par exemple, prenez une cellule Excel A1, contenant le texte « Bonjour ».
+                  </P>
+                  <p>
+                    Nous accédons a la cellule par :
+                  </p>
+                  <pre>Excel.Range cellule = Worksheet.Cells[1,1];</pre>
+                  <p>
+                    Si vous accéder l’objet Cells encore de cellule, vous allez avoir plusieurs choix
+                  </p>
+                  <pre>Cellule.Cells.Value2;</pre>
+                  <p>
+                    Va retourner un objet dynamique, si vous l’imprimez dans la console vous allez voir qu’il s’agit du string « Bonjour ».
+                  </p>
+                  <P>
+                    Si le texte avait été un chiffre comme 1; il aurait retourné un Integer avec la valeur de 1.
+                  </P>
+                  <p>
+                    Si la Cellule est le résultat d’une formule, la valeur va être le résultat et non la formule de la cellule.
+                  </p>
+                  <pre>cellule.Cells.Formula </pre>
+                  <p>
+                    Va retourner le string de la formule Excel. Ci il n’y a pas de formule, mais un texte elle va retourner le texte.
+                  </p>
+                  <br>
+                  <h4>
+                    Accès par Range Utiliser
+                  </h4>
+                  <P>
+                    Excel a une valeur cachée qui lui dit si la cellule est utilisée. Toute altération à la cellule va cocher cette valeur comme utiliser. C’est avec cela que l’interface Graphic Excel vous donne des barres déroulantes pour vous rendre jusqu’à la cellule la plus loin comme si elle était le coin de la feuille même s’il y a d’autres cellules.
+                  </P>
+                  <p>
+                    Le problème avec les autres accesseurs c'est que si vous demander le Range, vous allez avoir toutes les cellules qui dépasse la dernière cellule utiliser. Si vous voulez scanner le fichier, cela va augmenter drastiquement le temps. Heureusement nous pouvons spécifier que nous voulons les cellules à l’intérieur du carré former par la première cellule et la dernière cellule utiliser.
+                  </p>
+                  <p>
+                    Simplement passé par la propriété <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.office.interop.excel._worksheet.usedrange?view=excel-pia#Microsoft_Office_Interop_Excel__Worksheet_UsedRange" target="blank_">UsedRange</a>. Vu que le Range est récursif, vous pouvez utiliser avec les accesseurs précédant. 
+                  </p>
+                  <pre>Excel.Range range = Worksheet.Usedrange.Ranges;</pre>
+                  <p>
+                    Si la dernière cellule utiliseé est C3, le Range contiendra, A1,A2,A3,B1,B2,B3,C1,C2,C3.
+                  </p>
+                  <p>
+                    Si le WorkSheet est vide, la seule cellule retourner sera A1 même si elle n’a pas été touchée encore.
+                  </p>
+                  
+                  <br>
+                  <h4>
+                    Copier/Coller
+                  </h4>
+                  <p>
+                    Vous pouvez copier-coller un range avec la méthode <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.office.interop.excel.range.copy?view=excel-pia#Microsoft_Office_Interop_Excel_Range_Copy_System_Object_" target="blank_">Copy()</a> et <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.office.interop.excel.range.pastespecial?view=excel-pia#Microsoft_Office_Interop_Excel_Range_PasteSpecial_Microsoft_Office_Interop_Excel_XlPasteType_Microsoft_Office_Interop_Excel_XlPasteSpecialOperation_System_Object_System_Object_" target="blank_">pasteSpecial()</a>.
+                  </p>
+                  <p>
+                    Noter que c’est méthode utilise le clipbord d’Excel(équivalent à copie collée).
+                  </p>
+                  <pre>range.Copy();</pre>
+                  <p>
+                    Sélectionner un nouveau range et puis :
+                  </p>
+                  <pre>range.PasteSpecial();</pre>
+                  <p><em>utilisation du clipbord peut causer des conflits en Multithreading alors faits attention.</em></p>
+                  <br>
+                  <h4>
+                    <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.office.interop.excel.range.insert?view=excel-pia#Microsoft_Office_Interop_Excel_Range_Insert_System_Object_System_Object_" target="blank_">Insertion</a>
+                  </h4>
+                  <p>
+                    Un Range peut-être inséré dans un autre comme si nous étions sur l’interface graphique. Il faut simplement avoir copié le Range au clipbord avec la méthode copy(). 
+                  </p>
+                  <pre>range.Copy();
+worksheet.Cells[1, 5].insert(Excel.XlInsertShiftDirection.xlShiftToRight);</pre>
+                  <p>
+                    Si vous n’avez pas copié, une insertion vide sera faite. Utile pour créer de l’espace vide!
+                  </p>
+                  <br>
+                  <h4>
+                    Effacer
+                  </h4>
+                  <p>
+                    Une range peut aussi être effacée. Sélectionner le range et appeler Delete()
+                  </p>
+                  <pre>range.Delete()</pre>
+                  <br>
+                  <h4>
+                    <strong>Accès et modification des donner.</strong>
+                  </h4>
+                  <p>
+                    Vous pouvez faire une boucle et allez parcourir chaque Cells d’un Range et modifier la valeur, mais la nature de l'objet Range rend la procédure lente exponentiellement avec la quantité de cellules à parcourir.
+                  </p>
+                  <p>
+                    Vous ne me croyez pas, essayez-le!
+                  </p>
+                  <p>
+                    Il y a en fait une solution.
+                  </p>
+                  <p>
+                    Quand on obtient une Value2 ou Formula, on obtient un objet dynamique, mais on peut demander Value2 Formula pour un range au complet.
+                  </p>
+                  <p>Ils seront retournés en tant que Array 2D avec une base 1.</p>
+                  <p>
+                    Considère le code suivant :
+                  </p>
+                  <pre>Excel.Range range = worksheet.Range[worksheet.Cells[1,1],worksheet.Cells[2,4]];
+object[,] array = range.Cells.Value2;</pre>
+                  <p>
+                    object[1,1] va contenir la même valeur que worksheet.cells[1,1].value2
+                  et ainsi de suite.
+                  </p>
+                  <p>
+                    Vous pouvez modifier chaque objet du Array 2D pour ensuit les renvoyer dans la range de la façon suivante.
+                  </p>
+                  <pre>Range.Cells.Value2 = array;</pre>
+                  <p>
+                    Si vous n’oubliez pas de sauvegarder, les modifications seront faites.
+                  </p>
+                  <p>
+                    <em>Noter que prendre les Formule et les déplacés de cette méthode ne va pas ajuster la valeur des positions dans la formule puisqu’ils sont copiés en string.</em>
+                  </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card row">
+          <a class="card-link" data-toggle="collapse" href="#collapseThree">
+            <div class="card-header">
+              <h2>Conclusion <i class='fas fa-angle-down '></i></h2> 
+            </div>
+          </a>
+          <div id="collapseThree" class="collapse">
+            <div class="card-body" id = "con">
+              <p>
+                Si vous avez assez bien compris, vous pouvez faire un code comme celui si :
+              </p>
+              <pre>using System;
+using Excel = Microsoft.Office.Interop.Excel;
+
+namespace ExcelTest
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string AppPath = AppDomain.CurrentDomain.BaseDirectory;
+            string filePath = AppPath + "test.xlsx";
+
+            Excel.Application app = new Excel.Application();
+            app.DisplayAlerts = false;
+            Excel.Workbook workBook = app.Workbooks.Open(filePath);
+
+            Excel.Worksheet worksheet= workBook.Worksheets[1];
+
+            Excel.Range range = worksheet.Range[worksheet.Cells[1,1],worksheet.Cells[2,4]];
+
+            object[,] array = range.Cells.Value2;
+
+            for(int i = 1; i&lt;= 2; i++)
+            {
+                for(int j = 1;j&lt;= 4; j++)
+                {
+
+                    array[i, j] = "Allo";
+
+                }
+            }
+            range.Cells.Value2 = array;
+
+            workBook.Save();
+            workBook.Close();
+        }
+    }
+}</pre>
+            <p>
+              Il accède à un fichier Excel qui pour moi est vide, prend la première Sheet, qui dans mon cas est Sheet2 et parcoure le Range dans un Array 2d pour l'efficacité. Il le parcoure de A1 a B4, ajoutant la valeur “allo” et puis sauvegarde le Workbook et le ferme sans léser de programme rouler.
+            </p>
+            <p>
+              Le résulta:
+            </p>
+            <img class="img-fluid img-responsive" src="Styles/Images/Example.png" alt="Image de cellules excel"/>
+            <p>
+              Avant d’aller vous aventurer, vous devez comprendre une chose.
+            </p>
+            <h3>
+              Les Erreurs
+            </h3>
+            <p>
+              Au cours de vos manipulations vous allez rencontrer des erreurs, la librairie va souvent renvoyer une ou deux exceptions diffèrent avec une description vague et avec le même code. Il est recommandé de vérifier par vous même la source de l’erreur. Vous pouvez donc vérifier que le fichier existe avant de l’ouvrir. Vous assurez que le worksheet existe avant de l’ouvrir, etc. Il s’agit de l’un des désavantages de la librairie.
+            </p>
+            <p>
+              Vous pouvez ainsi gérer vos erreurs
+            </p>
+            <h2 class="justify-content-center">
+              Bon aventure!
+            </h2>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!--Footer-->
+      <footer id="about" class=" stickey-bottom d-sm-flex justify-content-center">
+        <div class = "container row" >
+          <div class="col-sm-6 text-center">
+          <h3>à propo</h3>
+          <p>
+            Auteur: Pierre-Rafael Vellone<br>
+            L’auteur a créé ce document et site pour le projet de stage de la session d’hiver 2020 au College Montmorency<br>
+            Les droits d’auteur pour le Logo de C# .net et d’Excel sont la propriété intellectuelle de la corporation Microsoft<br>
+          <br>Copyright © Pierre-Rafael Vellone
+          </p>
+        </div>
+        <div class="col-sm-6 text-center" >
+          <h3>Contact</h3>
+          <p>
+          Pierre-Rafael Vellone<br>
+          <a href="mailto:pierre-rafael.v@hotmail.com?subject=Travail%20de%20fin%20de%20Technique">pierre-rafael.v@hotmail.com</a>
+          </p>
+        </div>  
+        </div>
+      </footer>
+    </body>
+</html> 
